@@ -99,10 +99,10 @@
 
   <div class="logo">
     <!-- Use Flask's 'url_for' to generate the correct URL for the static image -->
-    <img src="{{ url_for('static', filename='SAC logo-04 (2).png') }}" alt="Logo">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
   </div>
 
-  <h1>Students Certificate Search</h1>
+  <h1>OutReach Certificate Search</h1>
 
   <form method="post" action="/search">
     <label for="rollNumber">Enter Roll Number:</label>
@@ -120,30 +120,6 @@
   </div>
 
   <!-- Your existing HTML content here -->
-
-  <script>
-    // Function to open the popup
-    function openPopup() {
-      document.getElementById('popup').style.display = 'flex';
-    }
-
-    // Function to close the popup
-    function closePopup() {
-      document.getElementById('popup').style.display = 'none';
-    }
-
-    // Function to handle search and download inside the popup
-    function searchAndDownload() {
-      var universityID = document.getElementById('universityIdPopup').value;
-
-      // You can implement your search and download logic here
-      // For now, let's just print the university ID to the console
-      console.log('University ID from Popup:', universityID);
-
-      // Close the popup
-      closePopup();
-    }
-  </script>
 
 </body>
 </html>

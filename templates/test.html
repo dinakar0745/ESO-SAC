@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            max-width: 20%;
+            height: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            display: block;
+            margin: 0 auto;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Second dropdown menu, initially hidden */
+        #activity {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <!-- Use Flask's 'url_for' to generate the correct URL for the static image -->
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+    </div>
+
+    <h1>Certificate's Search</h1>
+
+    <form method="post" action="/search">
+        <label for="co" style="font-weight: bold;">Choose the CO:</label>
+        <select id="co" name="co">
+            <option value="co1">OutReach</option>
+            <option value="co2">Technical</option>
+            <option value="co3">Cultural</option>
+            <!-- <option value="co4">EPICS</option> -->
+        </select>
+
+        <!-- Second dropdown menu, initially hidden -->
+        <label for="activity" style="font-weight: bold;">Choose the Activity: </label>
+        <select id="activity" name="activity">
+            <!-- Options will be dynamically added here based on the selection in the first dropdown -->
+        </select>
+
+        <label for="rollNumber" style="font-weight: bold;">Enter Roll Number:</label>
+        <input type="text" name="rollNumber" id="rollNumber">
+        <button type="submit">Search and Open PDF</button>
+    </form>
+
+    <script>
+        // Get reference to the first dropdown menu
+        var coDropdown = document.getElementById('co');
+        // Get reference to the second dropdown menu
+        var activityDropdown = document.getElementById('activity');
+
+        // Define the options for the second dropdown menu based on the selection in the first dropdown
+        var optionsMap = {
+            co1: ['All'],
+            co2: ['BlockChain Security', 'Implementation of ML Models', 'First Robotics Compitition', 'Static Website Presentation'],
+            co3: ['Sankranti Celebrations', 'Republic Day Celebrations'],
+            // co4: ['Model 4A', 'Model 4B', 'Model 4C']
+        };
+
+        // Function to update the options in the second dropdown menu based on the selection in the first dropdown
+        function updateActivityOptions() {
+            var selectedCO = coDropdown.value;
+            var options = optionsMap[selectedCO];
+
+            // Clear existing options
+            activityDropdown.innerHTML = '';
+
+            // Add new options based on the selection
+            options.forEach(function(option) {
+                var optionElement = document.createElement('option');
+                optionElement.textContent = option;
+                optionElement.value = option;
+                activityDropdown.appendChild(optionElement);
+            });
+
+            // Show the second dropdown menu
+            activityDropdown.style.display = 'block';
+        }
+
+        // Add event listener to the first dropdown menu to trigger the update of the second dropdown menu
+        coDropdown.addEventListener('change', updateActivityOptions);
+
+        // Initially update the options in the second dropdown menu based on the default selection
+        updateActivityOptions();
+
+        // Reload the page when the user navigates back to it
+        window.addEventListener('pageshow', function(event) {
+            var historyTraversal = event.persisted || (typeof window.performance != 'undefined' && window.performance.navigation.type === 2);
+            if (historyTraversal) {
+                // Force reload
+                window.location.reload();
+            }
+        });
+
+        // Prevent right-click context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

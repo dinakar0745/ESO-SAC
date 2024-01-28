@@ -5,14 +5,16 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('test.html')
 
 @app.route('/search', methods=['POST'])
 def search_and_open_pdf():
+    co = request.form['co']
+    activity = request.form['activity']
     roll_number = request.form['rollNumber']
 
     # Construct the file path for the PDF using the submitted roll number
-    pdf_file_name = f'./certs/{roll_number}.pdf'
+    pdf_file_name = f'certs/{co}/{activity}/{roll_number}.pdf'
     pdf_file_path = os.path.join(app.root_path, pdf_file_name)
 
     if os.path.isfile(pdf_file_path):
