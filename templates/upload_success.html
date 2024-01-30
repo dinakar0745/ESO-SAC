@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success</title>
+    <style>
+        .message {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            color: #333;
+            font-size: 24px;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="message">Certificates uploaded successfully.</div>
+    <div class="timer">Redirecting in <span id="countdown">5</span> seconds</div>
+
+    <script>
+        // Countdown timer class
+        class Timer {
+            constructor(duration, elementId) {
+                this.duration = duration;
+                this.element = document.getElementById(elementId);
+            }
+
+            start() {
+                let timer = this.duration;
+                const countdownElement = this.element;
+
+                const countdownInterval = setInterval(function () {
+                    timer--;
+                    countdownElement.textContent = timer;
+
+                    if (timer <= 0) {
+                        clearInterval(countdownInterval);
+                        // Redirect after the timer ends
+                        window.location.href = "{{ url_for('admin_dashboard') }}";
+                    }
+                }, 1000); // Update every second
+            }
+        }
+
+        // Start the countdown
+        const countdownTimer = new Timer(5, 'countdown'); // 5 seconds countdown
+        countdownTimer.start();
+    </script>
+</body>
+</html>

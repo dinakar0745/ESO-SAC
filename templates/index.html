@@ -1,125 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roll Number Search</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
 
-    h1 {
-      text-align: center;
-      color: #333;
-    }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-    form {
-      max-width: 400px;
-      margin: 20px auto;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+        .logo img {
+            max-width: 20%;
+            height: auto;
+        }
 
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #555;
-    }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
 
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 16px;
-      box-sizing: border-box;
-    }
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-    button {
-      display: block;
-      margin: 0 auto; /* Add this line to center the button horizontally */
-      background-color: #007bff;
-      color: #fff;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
 
-    button:hover {
-      background-color: #0056b3;
-    }
+        select,
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
 
+        button {
+            display: block;
+            margin: 0 auto;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-    /* Logo styles */
-    .logo {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+        button:hover {
+            background-color: #0056b3;
+        }
 
-    .logo img {
-      max-width: 20%;
-      height: auto;
-    }
-
-    .popup {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .popup-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      max-width: 400px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .close-btn {
-      cursor: pointer;
-      font-weight: bold;
-      color: #007bff;
-    }
-  </style>
+        /* Second dropdown menu, initially hidden */
+        #activity {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-
-  <div class="logo">
-    <!-- Use Flask's 'url_for' to generate the correct URL for the static image -->
-    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
-  </div>
-
-  <h1>OutReach Certificate Search</h1>
-
-  <form method="post" action="/search">
-    <label for="rollNumber">Enter Roll Number:</label>
-    <input type="text" name="rollNumber" id="rollNumber">
-    <button type="submit">Search and Open PDF</button>
-  </form>
-
-  <div class="popup" id="popup">
-    <div class="popup-content">
-      <span class="close-btn" onclick="closePopup()">X</span>
-      <label for="universityIdPopup">Enter University ID:</label>
-      <input type="text" id="universityIdPopup">
-      <button onclick="searchAndDownload()">Search and Download</button>
+    <div class="logo">
+        <!-- Use Flask's 'url_for' to generate the correct URL for the static image -->
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
     </div>
-  </div>
 
-  <!-- Your existing HTML content here -->
+    <h1>Certificate's Search</h1>
+
+    <form method="post" action="/search">
+        <label for="co" style="font-weight: bold;">Choose the CO:</label>
+        <select id="co" name="co">
+            <option value="OutReach">OutReach</option>
+            <option value="Technical">Technical</option>
+            <option value="Cultural">Cultural</option>
+            <option value="EPICS">EPICS</option>
+        </select>
+
+        <!-- Second dropdown menu, initially hidden -->
+        <label for="activity" style="font-weight: bold;">Choose the Activity: </label>
+        <select id="activity" name="activity">
+            <!-- Options will be dynamically added here based on the selection in the first dropdown -->
+        </select>
+
+        <script>
+            var coDropdown = document.getElementById('co');
+            var activityDropdown = document.getElementById('activity');
+        
+            function updateActivityOptions() {
+                var selectedCO = coDropdown.value;
+                
+                // Send an AJAX request to the server to fetch folder names based on the selected CO
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/get_folders');
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        var folders = JSON.parse(xhr.responseText);
+                        
+                        // Clear existing options
+                        activityDropdown.innerHTML = '';
+        
+                        // Add new options based on the fetched folder names
+                        folders.forEach(function(folder) {
+                            var optionElement = document.createElement('option');
+                            optionElement.textContent = folder;
+                            optionElement.value = folder;
+                            activityDropdown.appendChild(optionElement);
+                        });
+        
+                        // Show the second dropdown menu
+                        activityDropdown.style.display = 'block';
+                    } else {
+                        console.log('Request failed. Status:', xhr.status);
+                    }
+                };
+                xhr.send('co=' + selectedCO);
+            }
+        
+            coDropdown.addEventListener('change', updateActivityOptions);
+            updateActivityOptions(); // Initially populate the second dropdown menu
+        </script>
+
+        <label for="rollNumber" style="font-weight: bold;">Enter Roll Number:</label>
+        <input type="text" name="rollNumber" id="rollNumber">
+        <button type="submit">Search and Open PDF</button>
+    </form>
+
+    <script>
+        // Reload the page when the user navigates back to it
+        window.addEventListener('pageshow', function(event) {
+            var historyTraversal = event.persisted || (typeof window.performance != 'undefined' && window.performance.navigation.type === 2);
+            if (historyTraversal) {
+                // Force reload
+                window.location.reload();
+            }
+        });
+
+        // Prevent right-click context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+    </script>
 
 </body>
 </html>

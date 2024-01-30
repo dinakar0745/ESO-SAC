@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+</head>
+<body>
+    <div class="logo">
+        <!-- Use Flask's 'url_for' to generate the correct URL for the static image -->
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+    </div>
+
+    <div class="admin-dashboard">
+        <h2>Admin Dashboard</h2>
+        <form method="post" action="/create_folder_and_upload" enctype="multipart/form-data">
+            <label for="co">Select CO:</label>
+            <select id="co" name="co">
+                <option value="OutReach">OutReach</option>
+                <option value="Technical">Technical</option>
+                <option value="Cultural">Cultural</option>
+                <option value="EPICS">EPICS</option>
+                <!-- Add more CO options as needed -->
+            </select>
+            <label for="folderName">Event Name:</label>
+            <input type="text" id="folderName" name="folderName" required>
+            <label for="certificates">Upload Certificates:</label>
+            <input type="file" id="certificates" name="certificates[]" multiple accept=".pdf" required>
+            <button type="submit">Add</button>
+        </form>
+
+        <form method="post" action="/logout">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+
+</body>
+</html>
